@@ -1,30 +1,68 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
+  <div id="app" >
   <router-view/>
+
+  </div>
+  
 </template>
+  <script>
+export default {
+    name: "App",
+    data(){
+      return{
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+      }
+    },
+
+  }
+  </script>
+<style >
+
+body {
+  margin: 0px;
+  height: 100%;
 }
 
-#nav {
-  padding: 30px;
+body.home{ 
+    height: 100%; 
+    background-color: #4974e2;
+    /* фон всегда в body */
+    /* динамическое изменение фона */
+}
+body.settings{ 
+    height: 100%; 
+    background-color: #ffffff;
+
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+
+
+#app{
+
+  font-family: 'Roboto-regular';
+  width: 100%;
 }
+@font-face {
+  font-family: 'Roboto-regular';
+  src: local('Roboto-regular'), local('Roboto-regular'),
+    url('~@/assets/fonts/Roboto/roboto_regular.woff2') format('woff2'),
+    url('~@/assets/fonts/Roboto/roboto_regular.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Roboto-700';
+  src: local('Roboto-700'), local('Roboto-700'),
+    url('~@/assets/fonts/Roboto/roboto-700.woff2') format('woff2'),
+    url('~@/assets/fonts/Roboto/roboto-700.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+/* @media only screen and (max-width: 1000px) {   
+html,body,
+#app{ 
+    height: auto; 
+}
+ } */
 </style>
