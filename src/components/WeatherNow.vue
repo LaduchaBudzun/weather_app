@@ -17,11 +17,7 @@
                 <p>1012 <span class="init">hPa</span></p>
             </div>
         </div>
-      <Dialog header="Header" v-model:visible="display" >
-        Content
-    </Dialog>
-    <!-- <InputText/>
-    <Button label="Button"></Button> -->
+
   </div>
 </template>
 
@@ -30,7 +26,7 @@ export default {
     name:"WeatherNow",
     data(){
         return{
-            display: false,
+
         }
         
     }
@@ -54,7 +50,6 @@ export default {
     justify-content: center;
     align-items: center;
     gap: 35px;
-
 }
 .humidity {
     display: flex;

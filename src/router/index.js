@@ -12,6 +12,13 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: Settings,
+    children: [
+      {
+        path: "/location",
+        name: "Location",
+        component: Location,
+      },
+    ],
   },
 ];
 
