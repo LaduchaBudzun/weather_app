@@ -12,6 +12,7 @@
     "primeicons": "^5.0.0",
     "primevue": "^3.10.0",
     "vue": "^3.0.0",
+    "vue-debounce": "^3.0.2",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },

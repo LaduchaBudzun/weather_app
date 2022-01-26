@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import vueDebounce from "vue-debounce";
 
 import PrimeVue from "primevue/config";
 import Dialog from "primevue/dialog";
@@ -14,7 +15,7 @@ import "primevue/resources/primevue.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 
 const app = createApp(App);
-app.use(store).use(router).use(PrimeVue).mount("#app");
+app.use(store).use(router).use(PrimeVue).use(vueDebounce).mount("#app");
 
 app.component("Dialog", Dialog);
 app.component("InputText", InputText);

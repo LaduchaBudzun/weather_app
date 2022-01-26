@@ -8,12 +8,12 @@
                 <!-- <i class="pi pi-search" /> -->
                 <i class="pi pi-times" v-if="valueInputSearch.length > 0" @click="eraseSearch"/>
         
-                <InputText v-model="valueInputSearch" type="text" placeholder="Search"  />
+                <InputText v-model="valueInputSearch"  type="text" placeholder="Search" />
             </span>
           </div>
           <div class="content" >
               <!-- <div class="item">Baric,SB</div> -->
-              <div class="item" v-for="city in filteredCities" :key="city.id" @click="updateLocation(city)">
+              <div class="item" v-for="city in filteredCities" :key="city.id" @click="btnUpdateLocation(city)">
                   <span class="matchingPart">{{city.matchingPart}}</span>
                   <span>{{city.restOfWord}}</span> ,
                   <span>{{city.country}}</span>
@@ -56,13 +56,17 @@ export default {
 
     },
     methods:{
-        ...mapActions(['cityInput']),...mapMutations(['updateValueInputSearch','eraseSearch','updateLocation']),
-
+        ...mapActions(['cityInput','getJsonFile']),...mapMutations(['updateValueInputSearch','eraseSearch','deleteAllCities','updateLocation']),
+        btnUpdateLocation(city){
+            this.updateLocation(city)
+            this.$router.push({path:"/settings"})
+        }
 
     },
     unmounted(){
         console.log('unmounted')
         this.eraseSearch()//стираем поиск
+        this.deleteAllCities()
     }
 }
 </script>

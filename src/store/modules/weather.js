@@ -1,3 +1,5 @@
+import { debounce } from "vue-debounce";
+
 export default {
   actions: {
     getJsonFile({ commit }) {
@@ -11,8 +13,9 @@ export default {
       if (word.length < 3) {
         commit("updateFilteredCities", []);
         return;
+      } else {
+        dispatch("citySearch");
       }
-      dispatch("citySearch");
     },
 
     async citySearch({ commit, getters }) {
@@ -20,20 +23,20 @@ export default {
       const citySearchLength = citySearch.length;
       const cities = getters.allCities;
       let suitableСities = [];
-      console.log(1);
 
-      cities.forEach((city) => {
-        const truncatedName = city.name.substr(0, citySearchLength);
+      const returnedFunction = debounce(() => {
+        cities.forEach((city) => {
+          const truncatedName = city.name.substr(0, citySearchLength);
 
-        if (truncatedName == citySearch) {
-          if (
-            suitableСities.find(
-              (c) => c.matchingPart == truncatedName && c.restOfWord == ""
-            )
-          ) {
-            //проверка на неповторяемость города
-            return;
-          } else {
+          if (truncatedName.toLowerCase() == citySearch.toLowerCase()) {
+            //   //проверка на неповторяемость города
+            //   if (
+            //     suitableСities.find(
+            //       (c) => c.matchingPart == truncatedName && c.restOfWord == ""
+            //     )
+            //   ) {
+            //     return;
+            //   } else {}
             suitableСities.push({
               matchingPart: truncatedName,
               restOfWord: city.name.substr(citySearchLength),
@@ -43,10 +46,11 @@ export default {
               id: city.id,
             });
           }
-        }
-      });
-      console.log(suitableСities);
-      commit("updateFilteredCities", suitableСities);
+        });
+        console.log(suitableСities);
+        commit("updateFilteredCities", suitableСities);
+      }, "500ms"); //более менее оптимизированно
+      returnedFunction();
     },
 
     async getWeather({ commit, getters }) {
@@ -59,6 +63,9 @@ export default {
       );
 
       const result = await response.json();
+      console.log(result.current.dt);
+      console.log(result.timezone_offset * 1.5);
+      console.log(result.current.dt);
 
       commit("updateTimeNow", result.current.dt);
       commit("updateCurrentWeather", result.current);
@@ -78,8 +85,25 @@ export default {
 
       commit("updateDailyForecast", result.daily);
     },
+    applyingSettingsAction({ commit }) {
+      commit("applyingSettings");
+      commit("saveSettings");
+    },
   },
   mutations: {
+    // Geolocation
+    myLocation(state) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        console.log(position.coords.latitude, position.coords.longitude);
+
+        state.selectedSettings.location.coord.lat = position.coords.latitude;
+        state.selectedSettings.location.coord.lon = position.coords.longitude;
+        state.selectedSettings.location.city = "My location";
+        state.selectedSettings.location.country = "";
+
+        state.settings.location = state.selectedSettings.location;
+      });
+    },
     //Search
     updateLocation(state, city) {
       state.settings.location.city = city.fullname;
@@ -89,6 +113,8 @@ export default {
     eraseSearch(state) {
       state.valueInputSearch = "";
       state.filteredCities = [];
+    },
+    deleteAllCities(state) {
       state.allCities = [];
     },
     updateValueInputSearch(state, value) {
@@ -153,6 +179,7 @@ export default {
       state.currentWeather.windSpeed = current.wind_speed;
       state.currentWeather.airHumidity = current.humidity;
       state.currentWeather.pressure = current.pressure;
+      state.currentWeather.weather = current.weather[0];
     },
 
     //---settings---
@@ -172,12 +199,25 @@ export default {
       state.selectedSettings.pressure = state.settings.pressure;
       state.selectedSettings.location = state.settings.location;
     },
-    closingSettingsPage(state) {
+    updateSettingsPage(state) {
       //при закрытии страницы настроек settings = selectedSettings
       state.settings.degrees = state.selectedSettings.degrees;
       state.settings.windSpeed = state.selectedSettings.windSpeed;
       state.settings.pressure = state.selectedSettings.pressure;
       state.settings.location = state.selectedSettings.location;
+    },
+    updateSelectedSettings(state, savedSettings) {
+      state.selectedSettings.degrees = savedSettings.degrees;
+      state.selectedSettings.windSpeed = savedSettings.windSpeed;
+      state.selectedSettings.pressure = savedSettings.pressure;
+      state.selectedSettings.location = savedSettings.location;
+    },
+    //LocalStorage
+    saveSettings(state) {
+      localStorage.location = JSON.stringify(state.selectedSettings.location);
+      localStorage.degrees = state.selectedSettings.degrees;
+      localStorage.windSpeed = state.selectedSettings.windSpeed;
+      localStorage.pressure = state.selectedSettings.pressure;
     },
   },
   state: {
@@ -187,16 +227,16 @@ export default {
     timeNow: "",
     settings: {
       location: {
-        city: "Atlanta",
-        country: "US",
+        city: "",
+        country: "",
         coord: {
-          lat: "33.753746",
-          lon: "-84.386330",
+          lat: "",
+          lon: "",
         },
       },
-      degrees: "C",
-      windSpeed: "m/s",
-      pressure: "hPa",
+      degrees: "",
+      windSpeed: "",
+      pressure: "",
     },
 
     selectedSettings: {
@@ -218,8 +258,7 @@ export default {
       windSpeed: "2.1",
       pressure: "1012",
       airHumidity: "87",
-      date: "",
-      time: "",
+      weather: {},
     },
     hourlyWeather: [
       { id: 1, degrees: "", weather: {}, time: "" },
