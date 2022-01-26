@@ -1,37 +1,29 @@
 <template>
   <div class="hourly_forecast">
-          <div class="item">
+        <div class="item" >
               <span class="time">Now</span>
               <img src="@/../public/img/hourly_sun.svg" alt="">
-              <div class="weather_degrees">+28°</div>
+              <div class="weather_degrees">{{currentWeather.degrees}}°</div>
           </div>
-          <div class="item">
-              <span class="time">Now</span>
+          <div class="item" v-for="item in hourlyWeather" :key="item.id">
+              <span class="time">{{item.time}}</span>
               <img src="@/../public/img/hourly_sun.svg" alt="">
-              <div class="weather_degrees">+28°</div>
+              <div class="weather_degrees">{{item.degrees}}°</div>
           </div>
-          <div class="item">
-              <span class="time">Now</span>
-              <img src="@/../public/img/hourly_sun.svg" alt="">
-              <div class="weather_degrees">+28°</div>
-          </div>
-          <div class="item">
-              <span class="time">Now</span>
-              <img src="@/../public/img/hourly_sun.svg" alt="">
-              <div class="weather_degrees">+28°</div>
-          </div>
-          <div class="item">
-              <span class="time">Now</span>
-              <img src="@/../public/img/hourly_sun.svg" alt="">
-              <div class="weather_degrees">+28°</div>
-          </div>
-
       </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
-    name:"HourlyForecast"
+    name:"HourlyForecast",
+    computed:{
+        ...mapGetters(['hourlyWeather','currentWeather']),
+    },
+    methods:{
+
+    }
+    
 
 }
 </script>
@@ -49,6 +41,7 @@ export default {
 }
 .time{
     color:#BCCCF4;
+    font-size: 14px;
 }
 
 .hourly_forecast{

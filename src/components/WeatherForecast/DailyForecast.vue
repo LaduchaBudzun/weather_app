@@ -1,82 +1,48 @@
 <template>
   <div class="daily_forecast">
-        <div class="item_day">
+        
+        <div class="item_day" v-for="day in dailyWeather" :key="day.id">
             <div class="day">
-                <div class="date">Aug 15 th</div>
-                 <div class="day_of_week">Mondey</div>
+                <div class="date">{{day.date.month}} {{day.date.day}} th</div>
+                 <div class="day_of_week">{{day.date.weekday}}</div>
             </div>
             <div class="icon">
                 <img class="icon_img" src="@/../public/img/Partly_Cloudy_Day.svg" alt="">
             </div> 
             <div class="degrees_day">
-                <span class="day-time">+ 26°</span>
-                <span class="night-time">+ 21°</span>
+                <span class="day-time">{{day.dailyForecast}}°</span>
+                <span class="night-time">{{day.nightForecast}}°</span>
             </div>
         </div>
-        <div class="item_day">
-            <div class="day">
-                <div class="date">Aug 15 th</div>
-                 <div class="day_of_week">Mondey</div>
-            </div>
-            <div class="icon">
-                <img class="icon_img" src="@/../public/img/Partly_Cloudy_Day.svg" alt="">
-            </div> 
-            <div class="degrees_day">
-                <span class="day-time">+ 26°</span>
-                <span class="night-time">+ 21°</span>
-            </div>
-        </div>
-        <div class="item_day">
-            <div class="day">
-                <div class="date">Aug 15 th</div>
-                 <div class="day_of_week">Mondey</div>
-            </div>
-            <div class="icon">
-                <img class="icon_img" src="@/../public/img/Partly_Cloudy_Day.svg" alt="">
-            </div> 
-            <div class="degrees_day">
-                <span class="day-time">+ 26°</span>
-                <span class="night-time">+ 21°</span>
-            </div>
-        </div>
-        <div class="item_day">
-            <div class="day">
-                <div class="date">Aug 15 th</div>
-                 <div class="day_of_week">Mondey</div>
-            </div>
-            <div class="icon">
-                <img class="icon_img" src="@/../public/img/Partly_Cloudy_Day.svg" alt="">
-            </div> 
-            <div class="degrees_day">
-                <span class="day-time">+ 26°</span>
-                <span class="night-time">+ 21°</span>
-            </div>
-        </div>
-        <div class="item_day">
-            <div class="day">
-                <div class="date">Aug 15 th</div>
-                 <div class="day_of_week">Mondey</div>
-            </div>
-            <div class="icon">
-                <img class="icon_img" src="@/../public/img/Partly_Cloudy_Day.svg" alt="">
-            </div> 
-            <div class="degrees_day">
-                <span class="day-time">+ 26°</span>
-                <span class="night-time">+ 21°</span>
-            </div>
-        </div>
+        
       </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
+    name:'DailyForecast',
+    date(){
+        return{
 
+        }
+    },
+    computed:{
+        ...mapGetters(['dailyWeather'])
+    },
+    mounted(){
+        this.getDailyForecast()
+    },
+    methods:{
+        ...mapActions(['getDailyForecast'])
+    }
 }
 </script>
 
 <style scoped>
 .day-time{
     color: #000000;
+    margin-right: 6px;
 }
 .night-time{
     color:rgba(0, 0, 0, 0.28);
@@ -105,6 +71,7 @@ export default {
 }
 .date{
     color:rgba(0, 0, 0, 0.28);
+    font-size: 14px;
 }
 .day_of_week{
     margin-top: 3px;
