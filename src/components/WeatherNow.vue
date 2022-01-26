@@ -1,20 +1,24 @@
 <template>
   <div class="weather_now">
-      <div class="degrees">28 С <img src="../../public/img/Sun.svg" alt=""></div>
+      <div class="degrees">{{currentWeather.degrees}}  <span>°{{selectedSettings.degrees}}</span> <img src="../../public/img/Sun.svg" alt=""></div>
         <div class="comment">Very Sunny</div>
         <div class="weather_indicators">
             <div class="wind">
                 <img src="../../public/img/Wind.svg" alt="">
-                <span class="init">2.1m.e, E</span>
+                <span class="init" v-if="selectedSettings.windSpeed == 'm/s'">{{currentWeather.windSpeed}}{{selectedSettings.windSpeed}}, E</span>
+                <span class="init" v-else>{{(currentWeather.windSpeed * 2.23694).toFixed(1)}}{{selectedSettings.windSpeed}}, E</span>
+
                 <div class="compas"></div>
             </div>
             <div class="humidity">
                 <img src="../../public/img/humidity.svg" alt="">
-                <span>87 <span class="init">%</span></span>
+                <span class="humidity_value">{{currentWeather.airHumidity}}<span class="init">%</span></span>
             </div>
             <div class="atmosphere_pressure">
                 <img src="../../public/img/atmosphere_pressure.svg" alt="">
-                <p>1012 <span class="init">hPa</span></p>
+                <p v-if="selectedSettings.pressure == 'hPa'">{{currentWeather.pressure}} <span class="init" >{{selectedSettings.pressure}}</span></p>
+                <p v-else>{{(currentWeather.pressure * 0.750062).toFixed(1)}} <span class="init" >{{selectedSettings.pressure}}</span></p>
+
             </div>
         </div>
 
@@ -22,14 +26,21 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
     name:"WeatherNow",
     data(){
         return{
-
         }
+    },
+    computed:{
+        ...mapGetters(['currentWeather','selectedSettings']),
+    },
+   
+    methods:{
         
-    }
+   
+    },
 }
 </script>
 
@@ -47,19 +58,20 @@ export default {
 }
 .weather_indicators{
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 35px;
+
 }
 .humidity {
+    width: 82px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.humidity span{
+.humidity_value{
     margin-left: 5px;
 }
 .wind {
+    width: 160px;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../components/Home.vue";
 import Settings from "@/components/Settings/Settings";
+import Location from "@/components/Settings/Location";
 
 const routes = [
   {
@@ -12,13 +13,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: Settings,
-    children: [
-      {
-        path: "/location",
-        name: "Location",
-        component: Location,
-      },
-    ],
+  },
+  {
+    path: "/settings/location",
+    name: "Location",
+    component: Location,
   },
 ];
 

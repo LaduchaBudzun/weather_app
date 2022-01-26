@@ -3,7 +3,7 @@
       <div class="settings">
           <div class="title">
               <span>Settings</span>
-              <router-link to="/">
+              <router-link to="/" @click="closingSettingsPage">
                   <img class="close" src="@/../public/img/Close.svg" alt="">
               </router-link>
           </div>
@@ -11,7 +11,11 @@
               <div class="title_location"><span>Location selection</span></div>
               <div class="current">
                   <span>Current Location</span>
-                  <div class="current_location">ATLANTA, US</div>
+                  <div @click="locationModal = true" class="current_location">
+                      <span>{{settingsLocation.city}}</span> ,
+                      <span>{{settingsLocation.country}}</span>
+
+                  </div>
                   </div>
           </div>
           <div class="units">
@@ -20,7 +24,7 @@
                   <div class="unit">
                       <span>Temperature</span>
                       <label class="checkbox-green">
-                        <input type="checkbox" v-model="degrees" false-value="C" true-value="F" >
+                        <input type="checkbox" v-model="degrees"  false-value="C" true-value="F" >
                         <span class="checkbox-green-switch" data-label-off="C°" data-label-on="F°" ></span>
                      </label>
                   </div>
@@ -40,10 +44,9 @@
                   </div>
               </div>
           </div>
-          <div class="btn-cont"><Button label="Apply Settings" class="btn_apply" :loading="fasle"/></div>
+          <div class="btn-cont"><Button label="Apply Settings" class="btn_apply" :loading="fasle" @click="applyingSettings"/></div>
 
-
-           <Dialog v-model:visible="locationModal" class="dialog p-dialog p-modal-footer"  >
+           <Dialog v-model:visible="locationModal" header="Change Location?"  modal="true" >
                 <template #header showHeader="false">
 
                 </template>
@@ -54,7 +57,7 @@
                     </div>
 
                 <template #footer >
-                    <Button label="Cancel"  class="p-button p-component p-button-danger p-button-text"/>
+                    <Button label="Cancel"  class="p-button p-component p-button-danger p-button-text" @click="locationModal = false"/>
 
                 </template>
             </Dialog>
@@ -64,28 +67,80 @@
 </template>
 
 <script>
+import {  mapGetters, mapMutations} from 'vuex'
 export default {
     name: "Settings",
     data(){
         return{
-            degrees:'C',//вместо него значение из VueX
-            windSpeed:'m/s',
-            pressure:'hPa',
-            locationModal:true
+            locationModal:false,
+
 
         }
     },
     beforeCreate: function() {
         document.body.className = 'settings';
     },
-    methods:{
+    computed:{
+        ...mapGetters(['settingsLocation']),
+        degrees: {
+            get () {
+            return this.$store.state.weather.settings.degrees
+            },
+            set (value) {
+            this.$store.commit('updateDegrees', value)
+            }
+        },
+        windSpeed: {
+            get () {
+            return this.$store.state.weather.settings.windSpeed
+            },
+            set (value) {
+            this.$store.commit('updateWindSpeed', value)
+            }
+        },
+        pressure: {
+            get () {
+            return this.$store.state.weather.settings.pressure
+            },
+            set (value) {
+            this.$store.commit('updatePressure', value)
+            }
+        },
 
+    },
+    methods:{
+        ...mapMutations(['applyingSettings','closingSettingsPage'])
     }
+
+
 
 }
 </script>
 
+<style>
+.p-dialog-mask{
+    background: rgba(0, 0, 0, 0.77) !important;
+}
+.p-dialog .p-dialog-header .p-dialog-header-icon{
+    display: none;
+}
+.p-dialog .p-dialog-header{
+    display: flex;
+    justify-content: center;
+}
+.p-dialog .p-dialog-footer {
+    display: flex;
+    justify-content: center;
+    color: #FF0C0C;
+
+}
+    
+
+</style>
+
+
 <style scoped>
+
 .p-dialog-footer{
     display: flex;
     justify-content: center ;
@@ -144,6 +199,7 @@ export default {
     padding: 13px 15px;
 }
 .current_location{
+    cursor: pointer;
     color:#2196F3;
     font-family: 'Roboto-700';
 }
