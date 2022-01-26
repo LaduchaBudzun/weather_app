@@ -6,6 +6,7 @@
   
 </template>
   <script>
+import { mapActions, mapMutations } from 'vuex'
 export default {
     name: "App",
     data(){
@@ -13,6 +14,30 @@ export default {
 
       }
     },
+
+    methods:{
+      ...mapActions(['saveSettings']),...mapMutations(['updateSelectedSettings','updateSettingsPage']),
+
+      checkLocalStorage(){
+
+       if(localStorage.degrees) {
+         let savedSettings = {}
+         savedSettings.degrees = localStorage.degrees
+         savedSettings.windSpeed = localStorage.windSpeed
+         savedSettings.pressure = localStorage.pressure
+         savedSettings.location = JSON.parse(localStorage.location)
+
+          this.updateSelectedSettings(savedSettings)
+          this.updateSettingsPage()
+       }
+      }
+    },
+     mounted(){
+        this.checkLocalStorage()
+    },
+     onmounted(){
+        this.saveSettings()
+    }
 
   }
   </script>

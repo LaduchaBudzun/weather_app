@@ -1,7 +1,7 @@
 <template>
   <div class="weather_now">
       <div class="degrees">{{currentWeather.degrees}}  <span>°{{selectedSettings.degrees}}</span> <img src="../../public/img/Sun.svg" alt=""></div>
-        <div class="comment">Very Sunny</div>
+        <div class="comment">{{currentWeather.weather.description}}</div>
         <div class="weather_indicators">
             <div class="wind">
                 <img src="../../public/img/Wind.svg" alt="">

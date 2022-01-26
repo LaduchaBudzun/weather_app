@@ -3,7 +3,7 @@
       <div class="settings">
           <div class="title">
               <span>Settings</span>
-              <router-link to="/" @click="closingSettingsPage">
+              <router-link to="/" @click="updateSettingsPage">
                   <img class="close" src="@/../public/img/Close.svg" alt="">
               </router-link>
           </div>
@@ -44,7 +44,7 @@
                   </div>
               </div>
           </div>
-          <div class="btn-cont"><Button label="Apply Settings" class="btn_apply" :loading="fasle" @click="applyingSettings"/></div>
+          <div class="btn-cont"><Button label="Apply Settings" class="btn_apply" :loading="fasle" @click="btnApplyingSettings"/></div>
 
            <Dialog v-model:visible="locationModal" header="Change Location?"  modal="true" >
                 <template #header showHeader="false">
@@ -52,13 +52,12 @@
                 </template>
 
                     <div class="modal_content">
-                        <Button label="Use My Current Location"  class="p-button-outlined btn-loc"/>
+                        <Button label="Use My Current Location"  class="p-button-outlined btn-loc" @click="btnMyLocation" />
                         <router-link to="/settings/location" class="btn-link"><Button label="Select location manually"  class="p-button-outlined btn-loc" /></router-link>
                     </div>
 
                 <template #footer >
                     <Button label="Cancel"  class="p-button p-component p-button-danger p-button-text" @click="locationModal = false"/>
-
                 </template>
             </Dialog>
 
@@ -67,7 +66,7 @@
 </template>
 
 <script>
-import {  mapGetters, mapMutations} from 'vuex'
+import {  mapActions, mapGetters, mapMutations} from 'vuex'
 export default {
     name: "Settings",
     data(){
@@ -108,9 +107,21 @@ export default {
         },
 
     },
+   
     methods:{
-        ...mapMutations(['applyingSettings','closingSettingsPage'])
-    }
+        ...mapActions(['applyingSettingsAction']),
+        ...mapMutations(['updateSettingsPage','myLocation']),
+        btnApplyingSettings(){
+            this.applyingSettingsAction()
+            this.$router.push({ path: "/" });
+        },
+        btnMyLocation(){
+            this.myLocation()
+            this.locationModal = false
+        }
+
+    },
+
 
 
 
@@ -118,6 +129,9 @@ export default {
 </script>
 
 <style>
+.p-button-outlined{
+    width: 100%;
+}
 .p-dialog-mask{
     background: rgba(0, 0, 0, 0.77) !important;
 }
@@ -155,6 +169,7 @@ export default {
 }
 .btn-link{
     text-decoration: none;
+    width: 100%;
 }
 .btn-loc{
     font-size: 18px;
