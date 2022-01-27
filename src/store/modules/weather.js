@@ -56,6 +56,8 @@ export default {
     async getWeather({ commit, getters }) {
       const lat = getters.coordinates.lat;
       const lon = getters.coordinates.lon;
+      console.log("lat:" + lat);
+      console.log("lon:" + lon);
 
       let response = await fetch(
         //hourly - дни ,а daily - почасовое
@@ -64,8 +66,10 @@ export default {
 
       const result = await response.json();
       console.log(result.current.dt);
-      console.log(result.timezone_offset * 1.5);
-      console.log(result.current.dt);
+      console.log(result.timezone_offset);
+      console.log(
+        new Date((result.current.dt + result.timezone_offset) * 1000)
+      );
 
       commit("updateTimeNow", result.current.dt);
       commit("updateCurrentWeather", result.current);
@@ -82,6 +86,7 @@ export default {
       );
 
       const result = await response.json();
+      console.log(result.daily);
 
       commit("updateDailyForecast", result.daily);
     },
@@ -130,39 +135,46 @@ export default {
     },
     //---weather and time
     updateDailyForecast(state, daily) {
-      state.dailyWeather.forEach((day) => {
-        day.dailyForecast = Math.round(daily[day.id].temp.day);
+      state.dailyWeather = daily.slice(1, 6).map((day, index) => {
+        console.log(day);
+        day.id = index;
+        day.dailyForecast = Math.round(day.temp.day);
         if (day.dailyForecast > 0) {
           day.dailyForecast = "+" + day.dailyForecast;
         }
-        day.nightForecast = Math.round(daily[day.id].temp.night);
+        day.nightForecast = Math.round(day.temp.night);
         if (day.nightForecast > 0) {
           day.nightForecast = "+" + day.nightForecast;
         }
 
-        day.weather = daily[day.id].weather;
-
-        let date = new Date(daily[day.id].dt * 1000);
+        day.weather = day.weather[0];
+        day.icon = day.weather.icon;
+        console.log(day.icon);
+        let date = new Date(day.dt * 1000);
+        day.date = {};
         day.date.weekday = date.toLocaleString("en-US", { weekday: "long" });
         day.date.month = date.toLocaleString("en-US", { month: "short" });
         day.date.day = date.toLocaleString("en-US", { day: "numeric" });
+        return day;
       });
     },
 
     updateHourlyForecast(state, hourly) {
-      state.hourlyWeather.forEach((hour) => {
-        hour.degrees = Math.round(hourly[hour.id].temp);
+      state.hourlyWeather = hourly.slice(1, 5).map((hour, index) => {
+        hour.id = index;
+        hour.degrees = Math.round(hour.temp);
         if (hour.degrees > 0) {
           hour.degrees = "+" + hour.degrees;
         }
-        hour.weather = hourly[hour.id].weather;
+        hour.weather = hour.weather[0];
 
-        let date = new Date(hourly[hour.id].dt * 1000);
+        let date = new Date(hour.dt * 1000);
         hour.time = date.toLocaleString("en-US", {
           hour: "numeric",
           minute: "numeric",
           hour12: true,
         });
+        return hour;
       });
     },
 
@@ -260,49 +272,8 @@ export default {
       airHumidity: "87",
       weather: {},
     },
-    hourlyWeather: [
-      { id: 1, degrees: "", weather: {}, time: "" },
-      { id: 2, degrees: "", weather: {}, time: "" },
-      { id: 3, degrees: "", weather: {}, time: "" },
-      { id: 4, degrees: "", weather: {}, time: "" },
-    ],
-    dailyWeather: [
-      {
-        id: 1,
-        dailyForecast: "",
-        nightForecast: "",
-        date: { weekday: "", month: "", day: "" },
-        weather: {},
-      },
-      {
-        id: 2,
-        dailyForecast: "",
-        nightForecast: "",
-        date: { weekday: "", month: "", day: "" },
-        weather: {},
-      },
-      {
-        id: 3,
-        dailyForecast: "",
-        nightForecast: "",
-        date: { weekday: "", month: "", day: "" },
-        weather: {},
-      },
-      {
-        id: 4,
-        dailyForecast: "",
-        nightForecast: "",
-        date: { weekday: "", month: "", day: "" },
-        weather: {},
-      },
-      {
-        id: 5,
-        dailyForecast: "",
-        nightForecast: "",
-        date: { weekday: "", month: "", day: "" },
-        weather: {},
-      },
-    ],
+    hourlyWeather: [],
+    dailyWeather: [],
   },
   getters: {
     currentWeather(state) {

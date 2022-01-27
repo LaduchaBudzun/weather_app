@@ -1,6 +1,14 @@
 <template>
   <div class="weather_now">
-      <div class="degrees">{{currentWeather.degrees}}  <span>°{{selectedSettings.degrees}}</span> <img src="../../public/img/Sun.svg" alt=""></div>
+      <div class="degrees">{{currentWeather.degrees}}  <span>°{{selectedSettings.degrees}}</span> 
+
+                <img class="icon_img" v-if="currentWeather.weather.icon == undefined" src=""  alt="">
+
+                <img class="icon_img" v-else-if="currentWeather.weather.icon == '50d' || currentWeather.weather.icon == '50n'" :src="require(`../../public/icons/${currentWeather.weather.icon}.png`)"  alt="">
+        
+                <img class="icon_img" v-else  :src="require(`../../public/icons/${currentWeather.weather.icon}.svg`)"  alt="">
+      </div>
+                 
         <div class="comment">{{currentWeather.weather.description}}</div>
         <div class="weather_indicators">
             <div class="wind">
@@ -45,6 +53,11 @@ export default {
 </script>
 
 <style scoped>
+.icon_img{
+    margin-left: 15px;
+    width: 72px;
+    height: 72px;
+}
 .atmosphere_pressure{
     display: flex;
     justify-content: center;
