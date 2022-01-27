@@ -13,10 +13,11 @@
         <div class="weather_indicators">
             <div class="wind">
                 <img src="../../public/img/Wind.svg" alt="">
-                <span class="init" v-if="selectedSettings.windSpeed == 'm/s'">{{currentWeather.windSpeed}}{{selectedSettings.windSpeed}}, E</span>
-                <span class="init" v-else>{{(currentWeather.windSpeed * 2.23694).toFixed(1)}}{{selectedSettings.windSpeed}}, E</span>
+                <span class="init" v-if="selectedSettings.windSpeed == 'm/s'">{{currentWeather.windSpeed}}{{selectedSettings.windSpeed}}</span>
+                <span class="init" v-else>{{(currentWeather.windSpeed * 2.23694).toFixed(1)}}{{selectedSettings.windSpeed}}</span>
+                <span class="direction" >, {{directionWind(currentWeather.wind_deg)}}</span>
 
-                <div class="compas"></div>
+                <div class="compas"><img class="arrow" :style="{ transform: 'rotate('+ currentWeather.wind_deg+'deg)'}" src="../../public/img/Arrow.svg" alt=""></div>
             </div>
             <div class="humidity">
                 <img src="../../public/img/humidity.svg" alt="">
@@ -46,13 +47,42 @@ export default {
     },
    
     methods:{
-        
+        directionWind(wind_deg){
+            if(wind_deg >= 335 || wind_deg < 25){
+                return 'N'
+            }else if(wind_deg >= 295 && wind_deg < 335){
+                return 'NW'
+            }else if(wind_deg >= 245 && wind_deg < 295){
+                return 'W'
+            }else if(wind_deg >= 205 && wind_deg < 245){
+                return 'SW'
+            }else if(wind_deg >= 205 && wind_deg < 245){
+                return 'SW'
+            }else if(wind_deg >= 155 && wind_deg < 205){
+                return 'S'
+            }else if(wind_deg >= 155 && wind_deg < 205){
+                return 'S'
+            }else if(wind_deg >= 115 && wind_deg < 155){
+                return 'SE'
+            }else if(wind_deg >= 65 && wind_deg < 115){
+                return 'E'
+            }else if(wind_deg >= 25 && wind_deg < 65){
+                return 'NE'
+            }
+        }
    
     },
 }
 </script>
 
 <style scoped>
+.arrow{
+    margin-right: 1px;
+}
+.direction{
+    color:#BCCCF4;
+    margin-right: 3px;
+}
 .icon_img{
     margin-left: 15px;
     width: 72px;
@@ -89,12 +119,15 @@ export default {
     justify-content: center;
     align-items: center;
 }
-.wind span{
+.wind .init{
     margin-left: 11px;
     margin-right: 5px;
 
 }
 .compas{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: aqua;
     width: 20px;
     height: 20px;
