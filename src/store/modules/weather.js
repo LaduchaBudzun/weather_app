@@ -47,17 +47,14 @@ export default {
             });
           }
         });
-        console.log(suitableСities);
         commit("updateFilteredCities", suitableСities);
-      }, "500ms"); //более менее оптимизированно
+      }, "800ms"); //более менее оптимизированно
       returnedFunction();
     },
 
     async getWeather({ commit, getters }) {
       const lat = getters.coordinates.lat;
       const lon = getters.coordinates.lon;
-      console.log("lat:" + lat);
-      console.log("lon:" + lon);
 
       let response = await fetch(
         //hourly - дни ,а daily - почасовое
@@ -67,9 +64,6 @@ export default {
       const result = await response.json();
       console.log(result.current.dt);
       console.log(result.timezone_offset);
-      console.log(
-        new Date((result.current.dt + result.timezone_offset) * 1000)
-      );
 
       commit("updateTimeNow", result.current.dt);
       commit("updateCurrentWeather", result.current);
@@ -86,7 +80,6 @@ export default {
       );
 
       const result = await response.json();
-      console.log(result.daily);
 
       commit("updateDailyForecast", result.daily);
     },
@@ -99,8 +92,6 @@ export default {
     // Geolocation
     myLocation(state) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        console.log(position.coords.latitude, position.coords.longitude);
-
         state.selectedSettings.location.coord.lat = position.coords.latitude;
         state.selectedSettings.location.coord.lon = position.coords.longitude;
         state.selectedSettings.location.city = "My location";
@@ -130,13 +121,11 @@ export default {
       state.filteredCities = filteredCities;
     },
     updateAllCities(state, allCities) {
-      console.log(allCities);
       state.allCities = allCities;
     },
     //---weather and time
     updateDailyForecast(state, daily) {
       state.dailyWeather = daily.slice(1, 6).map((day, index) => {
-        console.log(day);
         day.id = index;
         day.dailyForecast = Math.round(day.temp.day);
         if (day.dailyForecast > 0) {
@@ -149,7 +138,7 @@ export default {
 
         day.weather = day.weather[0];
         day.icon = day.weather.icon;
-        console.log(day.icon);
+
         let date = new Date(day.dt * 1000);
         day.date = {};
         day.date.weekday = date.toLocaleString("en-US", { weekday: "long" });
@@ -189,6 +178,8 @@ export default {
       }
 
       state.currentWeather.windSpeed = current.wind_speed;
+      state.currentWeather.wind_deg = current.wind_deg;
+      console.log(state.currentWeather.wind_deg);
       state.currentWeather.airHumidity = current.humidity;
       state.currentWeather.pressure = current.pressure;
       state.currentWeather.weather = current.weather[0];
