@@ -33,8 +33,10 @@ import WeatherNow from './WeatherNow.vue'
 import HourlyForecast from './WeatherForecast/HourlyForecast.vue'
 import DailyForecast from './WeatherForecast/DailyForecast.vue'
 import { mapGetters,mapActions } from 'vuex'
+import functions from '../mixins/functions'
 export default {
     name: 'Home',
+    mixins:[functions],
     components:{
       WeatherNow,
       HourlyForecast,
@@ -69,25 +71,9 @@ export default {
          this.time = this.timeNow.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 
         },
-         numberEnding(date){
-           const last = date.toString().slice(-1)
-           if(last == '1'){
-             return 'st'
-           }else if(last == '2'){
-             return 'nd'
-           }else if(last == '3'){
-             return 'rd'
-           }else{
-             return 'th'
-           }
-         }
 
-        //   setInterval(function() {
-        //   this.time = this.timeNow.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true ,year:'numeric'})  
-        //   console.log(this.timeNow)
-        // }.bind(this), 60000);
 
-// Остановить исполнение можно вызовом clearInterval(time).
+
     }
 
 }

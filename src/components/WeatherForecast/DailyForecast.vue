@@ -3,12 +3,19 @@
         
         <div class="item_day" v-for="day in dailyWeather" :key="day.id">
             <div class="day">
-                <div class="date">{{day.date.month}} {{day.date.day}} th</div>
+                <div class="date">{{day.date.month}} {{day.date.day}}{{numberEnding(day.date.day)}}</div>
                  <div class="day_of_week">{{day.date.weekday}}</div>
             </div>
-            <div class="icon">
-                <img class="icon_img" src="@/../public/img/Partly_Cloudy_Day.svg" alt="">
+            <div class="icon" v-if="day.weather.icon == undefined" >
+                <img class="icon_img"   alt="">
             </div> 
+             <div class="icon"  v-if="day.weather.icon == '50d' || day.weather.icon == '50n'">
+                <img class="icon_img" :src="require(`../../../public/icons/${day.weather.icon}.png`)"  alt="">
+            </div> 
+            <div class="icon"  >
+                <img class="icon_img" :src="require(`../../../public/icons/${day.weather.icon}.svg`)"  alt="">
+            </div> 
+
             <div class="degrees_day">
                 <span class="day-time">{{day.dailyForecast}}°</span>
                 <span class="night-time">{{day.nightForecast}}°</span>
@@ -20,10 +27,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import functions from '../../mixins/functions'
 export default {
     name:'DailyForecast',
+     mixins:[functions],
     date(){
         return{
+            path:'../../../public/icons/',
+            svg:'svg',
+            png:'png'
 
         }
     },
@@ -32,9 +44,13 @@ export default {
     },
     mounted(){
         this.getDailyForecast()
+
     },
     methods:{
-        ...mapActions(['getDailyForecast'])
+        ...mapActions(['getDailyForecast']),
+        // displayIcons(){
+        //     this.dailyWeather.
+        // }
     }
 }
 </script>
@@ -53,7 +69,12 @@ export default {
     align-items: center;
 }
 .icon{
-    margin-left: 10px;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
 .icon_img{
     width: 44px;
@@ -68,6 +89,7 @@ export default {
     padding: 15px 20px;
     background-color:#E9EEFA;
     width: 100%;
+    position: relative;
 }
 .date{
     color:rgba(0, 0, 0, 0.28);
