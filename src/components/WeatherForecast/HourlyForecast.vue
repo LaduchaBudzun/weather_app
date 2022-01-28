@@ -9,12 +9,13 @@
           </div>
           <div class="item" v-for="item in hourlyWeather" :key="item.id">
               <span class="time">{{item.time}}</span>
-                <img class="hour_icon" v-if="currentWeather.weather.icon == undefined" src=""  alt="">
-                <img class="hour_icon" v-else-if="currentWeather.weather.icon == '50d' || currentWeather.weather.icon == '50n'" :src="require(`../../../public/icons/${currentWeather.weather.icon}.png`)"  alt="">
-                <img class="hour_icon" v-else :src="require(`../../../public/icons/${currentWeather.weather.icon}.svg`)"  alt="">
+                <img class="hour_icon" v-if="item.icon == undefined" src=""  alt="">
+                <img class="hour_icon" v-else-if="item.icon == '50d' || item.icon == '50n'" :src="require(`../../../public/icons/${item.icon}.png`)"  alt="">
+                <img class="hour_icon" v-else :src="require(`../../../public/icons/${item.icon}.svg`)"  alt="">
               <div class="weather_degrees">{{item.degrees}}°</div>
-          </div>
+
       </div>
+  </div>
 </template>
 
 <script>
