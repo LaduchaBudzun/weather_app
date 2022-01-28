@@ -62,12 +62,19 @@ export default {
       );
 
       const result = await response.json();
-      console.log(result.current.dt);
-      console.log(result.timezone_offset);
 
-      commit("updateTimeNow", result.current.dt);
+      let date = {
+        dt: result.current.dt,
+        timeZone: result.timezone,
+      };
+
+      commit("timeDecoding", date);
       commit("updateCurrentWeather", result.current);
-      commit("updateHourlyForecast", result.hourly);
+      let hourlyData = {
+        hourly: result.hourly,
+        timeZone: result.timezone,
+      };
+      commit("updateHourlyForecast", hourlyData);
     },
 
     async getDailyForecast({ commit, getters }) {
@@ -125,50 +132,90 @@ export default {
     },
     //---weather and time
     updateDailyForecast(state, daily) {
-      state.dailyWeather = daily.slice(1, 6).map((day, index) => {
+      state.dailyWeather = daily.slice(1, 6).map((d, index) => {
+        let day = {};
         day.id = index;
-        day.dailyForecast = Math.round(day.temp.day);
+        day.dailyForecast = Math.round(d.temp.day);
         if (day.dailyForecast > 0) {
           day.dailyForecast = "+" + day.dailyForecast;
         }
-        day.nightForecast = Math.round(day.temp.night);
+        day.nightForecast = Math.round(d.temp.night);
         if (day.nightForecast > 0) {
           day.nightForecast = "+" + day.nightForecast;
         }
 
-        day.weather = day.weather[0];
-        day.icon = day.weather.icon;
+        day.icon = d.weather[0].icon;
 
-        let date = new Date(day.dt * 1000);
+        let date = new Date(d.dt * 1000);
         day.date = {};
-        day.date.weekday = date.toLocaleString("en-US", { weekday: "long" });
-        day.date.month = date.toLocaleString("en-US", { month: "short" });
-        day.date.day = date.toLocaleString("en-US", { day: "numeric" });
+        day.date.weekday = date.toLocaleString("en-US", {
+          weekday: "long",
+          timeZone: date.timeZone,
+        });
+        day.date.month = date.toLocaleString("en-US", {
+          month: "short",
+          timeZone: date.timeZone,
+        });
+        day.date.day = date.toLocaleString("en-US", {
+          day: "numeric",
+          timeZone: date.timeZone,
+        });
         return day;
       });
     },
 
-    updateHourlyForecast(state, hourly) {
-      state.hourlyWeather = hourly.slice(1, 5).map((hour, index) => {
+    updateHourlyForecast(state, data) {
+      state.hourlyWeather = data.hourly.slice(1, 5).map((item, index) => {
+        let hour = {};
         hour.id = index;
-        hour.degrees = Math.round(hour.temp);
+        hour.degrees = Math.round(item.temp);
         if (hour.degrees > 0) {
           hour.degrees = "+" + hour.degrees;
         }
-        hour.weather = hour.weather[0];
+        hour.icon = item.weather[0].icon;
 
-        let date = new Date(hour.dt * 1000);
+        let date = new Date(item.dt * 1000);
         hour.time = date.toLocaleString("en-US", {
           hour: "numeric",
           minute: "numeric",
           hour12: true,
+          timeZone: data.timeZone,
         });
         return hour;
       });
     },
 
-    updateTimeNow(state, dateUnix) {
-      state.timeNow = new Date(dateUnix * 1000);
+    timeDecoding(state, date) {
+      const timeNow = new Date(date.dt * 1000);
+
+      if (!date.timeZone) {
+        date.timeZone = state.date.timeZone;
+      } else {
+        state.date.timeZone = date.timeZone;
+      }
+
+      state.date.year = timeNow.toLocaleString("en-US", {
+        year: "numeric",
+        timeZone: date.timeZone,
+      });
+      state.date.weekday = timeNow.toLocaleString("en-US", {
+        weekday: "long",
+        timeZone: date.timeZone,
+      });
+      state.date.day = timeNow.toLocaleString("en-US", {
+        day: "numeric",
+        timeZone: date.timeZone,
+      });
+      state.date.month = timeNow.toLocaleString("en-US", {
+        month: "short",
+        timeZone: date.timeZone,
+      });
+      state.date.time = timeNow.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+        timeZone: date.timeZone,
+      });
     },
 
     updateCurrentWeather(state, current) {
@@ -179,7 +226,6 @@ export default {
 
       state.currentWeather.windSpeed = current.wind_speed;
       state.currentWeather.wind_deg = current.wind_deg;
-      console.log(state.currentWeather.wind_deg);
       state.currentWeather.airHumidity = current.humidity;
       state.currentWeather.pressure = current.pressure;
       state.currentWeather.weather = current.weather[0];
@@ -227,7 +273,7 @@ export default {
     valueInputSearch: "",
     allCities: [],
     filteredCities: [],
-    timeNow: "",
+    date: {},
     settings: {
       location: {
         city: "",
@@ -299,6 +345,9 @@ export default {
     },
     coordinates(state) {
       return state.selectedSettings.location.coord;
+    },
+    date(state) {
+      return state.date;
     },
   },
 };

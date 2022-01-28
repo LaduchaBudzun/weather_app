@@ -1,6 +1,9 @@
 export default {
   methods: {
     numberEnding(date) {
+      if (!date) {
+        return;
+      }
       const last = date.toString().slice(-1);
       if (last == "1") {
         return "st";

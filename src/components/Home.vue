@@ -13,16 +13,16 @@
             </router-link>
           </div>
           <div class="time">
-            <p class="timeNow">{{time}}</p> 
-            <p class="monthNow">{{month}} </p>
-            <p>{{day}}{{numberEnding(day)}}, {{year}}</p>
+            <p class="timeNow">{{date.time}}</p> 
+            <p class="monthNow">{{date.month}} </p>
+            <p>{{date.day}}{{numberEnding(date.day)}}, {{date.year}}</p>
           </div>
           <WeatherNow/>
           <div class="WeatherForecast">
             <HourlyForecast/>
             <DailyForecast/>
           </div>
-  
+
         </div>
     </div>
  </div>
@@ -32,7 +32,7 @@
 import WeatherNow from './WeatherNow.vue'
 import HourlyForecast from './WeatherForecast/HourlyForecast.vue'
 import DailyForecast from './WeatherForecast/DailyForecast.vue'
-import { mapGetters,mapActions } from 'vuex'
+import { mapGetters,mapActions, mapMutations } from 'vuex'
 import functions from '../mixins/functions'
 export default {
     name: 'Home',
@@ -44,35 +44,29 @@ export default {
     },
     data(){
       return{
-        time:'',
-        dateNow:'',
-        weekday:'',
-        day:''
       }
     },
     computed:{
-      ...mapGetters(['timeNow','location'])
+      ...mapGetters(['timeNow','location','date'])
     },
     beforeCreate: function() {
         document.body.className = 'home';
     },
     async mounted(){
       await this.getWeather()
-      this.timeDecoding()
+      this.updateTime()
     },
     
     methods:{
-      ...mapActions(['getWeather']),
-        timeDecoding(){//перенести это в vuex date:{}
-         this.year = this.timeNow.toLocaleString('en-US', { year:'numeric'})
-         this.weekday = this.timeNow.toLocaleString('en-US', { weekday: 'long'})
-         this.day = this.timeNow.toLocaleString('en-US', {day:'numeric'})
-         this.month = this.timeNow.toLocaleString('en-US', {month:'short'})
-         this.time = this.timeNow.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-
-        },
-
-
+      ...mapActions(['getWeather']),...mapMutations(['timeDecoding']),
+        updateTime(){
+ 
+          setInterval(() => {
+                     console.log(Date.now())
+            const timeNow = Date.now() / 1000;
+            this.timeDecoding({dt:timeNow})
+          }, 10000)
+        }
 
     }
 

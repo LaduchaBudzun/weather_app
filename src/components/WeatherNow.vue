@@ -77,7 +77,8 @@ export default {
 
 <style scoped>
 .arrow{
-    margin-right: 1px;
+
+    margin-top: 1px;
 }
 .direction{
     color:#BCCCF4;

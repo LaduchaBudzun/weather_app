@@ -6,14 +6,14 @@
                 <div class="date">{{day.date.month}} {{day.date.day}}{{numberEnding(day.date.day)}}</div>
                  <div class="day_of_week">{{day.date.weekday}}</div>
             </div>
-            <div class="icon" v-if="day.weather.icon == undefined" >
+            <div class="icon" v-if="day.icon == undefined" >
                 <img class="icon_img"   alt="">
             </div> 
-             <div class="icon"  v-if="day.weather.icon == '50d' || day.weather.icon == '50n'">
-                <img class="icon_img" :src="require(`../../../public/icons/${day.weather.icon}.png`)"  alt="">
+             <div class="icon"  v-if="day.icon == '50d' || day.icon == '50n'">
+                <img class="icon_img" :src="require(`../../../public/icons/${day.icon}.png`)"  alt="">
             </div> 
             <div class="icon"  >
-                <img class="icon_img" :src="require(`../../../public/icons/${day.weather.icon}.svg`)"  alt="">
+                <img class="icon_img" :src="require(`../../../public/icons/${day.icon}.svg`)"  alt="">
             </div> 
 
             <div class="degrees_day">
