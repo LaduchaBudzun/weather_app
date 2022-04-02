@@ -107,10 +107,13 @@ export default {
         },
 
     },
+    mounted(){
+        this.updateSettingsPage()
+    },
    
     methods:{
         ...mapActions(['applyingSettingsAction']),
-        ...mapMutations(['updateSettingsPage','myLocation']),
+        ...mapMutations(['updateSettingsPage','myLocation','updateSettingsPage']),
         btnApplyingSettings(){
             this.applyingSettingsAction()
             this.$router.push({ path: "/" });

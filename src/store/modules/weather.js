@@ -90,9 +90,11 @@ export default {
 
       commit("updateDailyForecast", result.daily);
     },
-    applyingSettingsAction({ commit }) {
+    applyingSettingsAction({ commit, dispatch }) {
       commit("applyingSettings");
       commit("saveSettings");
+      dispatch("getWeather");
+      dispatch("getDailyForecast");
     },
   },
   mutations: {
