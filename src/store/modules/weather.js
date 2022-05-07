@@ -1,56 +1,19 @@
-import { debounce } from "vue-debounce";
+import {workerCities} from '../../services/worker-api.service'
+
 
 export default {
   actions: {
-    getJsonFile({ commit }) {
-      const currentJsonFile = require("../../assets/json/city.list.json"); //правильная загрузка json файла
-      commit("updateAllCities", currentJsonFile);
-    },
-
-    cityInput({ commit, dispatch, getters }) {
+    cityInput({ commit, getters }) {
       const word = getters.valueInputSearch;
 
       if (word.length < 3) {
         commit("updateFilteredCities", []);
         return;
       } else {
-        dispatch("citySearch");
+        workerCities({action:'filter',word:getters.valueInputSearch})
       }
     },
 
-    async citySearch({ commit, getters }) {
-      const citySearch = getters.valueInputSearch;
-      const citySearchLength = citySearch.length;
-      const cities = getters.allCities;
-      let suitableСities = [];
-
-      const returnedFunction = debounce(() => {
-        cities.forEach((city) => {
-          const truncatedName = city.name.substr(0, citySearchLength);
-
-          if (truncatedName.toLowerCase() == citySearch.toLowerCase()) {
-            //   //проверка на неповторяемость города
-            //   if (
-            //     suitableСities.find(
-            //       (c) => c.matchingPart == truncatedName && c.restOfWord == ""
-            //     )
-            //   ) {
-            //     return;
-            //   } else {}
-            suitableСities.push({
-              matchingPart: truncatedName,
-              restOfWord: city.name.substr(citySearchLength),
-              fullname: city.name,
-              country: city.country,
-              coord: city.coord,
-              id: city.id,
-            });
-          }
-        });
-        commit("updateFilteredCities", suitableСities);
-      }, "800ms"); //более менее оптимизированно
-      returnedFunction();
-    },
 
     async getWeather({ commit, getters }) {
       const lat = getters.coordinates.lat;
@@ -98,6 +61,8 @@ export default {
     },
   },
   mutations: {
+    //Loaders
+    
     // Geolocation
     myLocation(state) {
       navigator.geolocation.getCurrentPosition(function (position) {
@@ -119,9 +84,7 @@ export default {
       state.valueInputSearch = "";
       state.filteredCities = [];
     },
-    deleteAllCities(state) {
-      state.allCities = [];
-    },
+  
     updateValueInputSearch(state, value) {
       state.valueInputSearch = value;
     },
@@ -129,9 +92,7 @@ export default {
     updateFilteredCities(state, filteredCities) {
       state.filteredCities = filteredCities;
     },
-    updateAllCities(state, allCities) {
-      state.allCities = allCities;
-    },
+
     //---weather and time
     updateDailyForecast(state, daily) {
       state.dailyWeather = daily.slice(1, 6).map((d, index) => {
@@ -272,8 +233,8 @@ export default {
     },
   },
   state: {
+    citiesLoader:true,
     valueInputSearch: "",
-    allCities: [],
     filteredCities: [],
     date: {},
     settings: {
@@ -305,16 +266,19 @@ export default {
     },
 
     currentWeather: {
-      degrees: "20",
-      windSpeed: "2.1",
-      pressure: "1012",
-      airHumidity: "87",
+      degrees: "",
+      windSpeed: "",
+      pressure: "",
+      airHumidity: "",
       weather: {},
     },
     hourlyWeather: [],
     dailyWeather: [],
   },
   getters: {
+    citiesLoader(state) {
+      return state.citiesLoader
+    },   
     currentWeather(state) {
       return state.currentWeather;
     },
@@ -329,9 +293,6 @@ export default {
     },
     timeNow(state) {
       return state.timeNow;
-    },
-    allCities(state) {
-      return state.allCities;
     },
     filteredCities(state) {
       return state.filteredCities;

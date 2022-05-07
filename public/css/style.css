@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'Roboto-regular';
+    src: local('Roboto-regular'), local('Roboto-regular'),
+        url('~@/assets/fonts/Roboto/roboto_regular.woff2') format('woff2'),
+        url('~@/assets/fonts/Roboto/roboto_regular.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto-700';
+    src: local('Roboto-700'), local('Roboto-700'),
+        url('~@/assets/fonts/Roboto/roboto-700.woff2') format('woff2'),
+        url('~@/assets/fonts/Roboto/roboto-700.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@keyframes p-progress-spinner-color {
+
+    100%,
+    0% {
+        stroke: #ffffff;
+    }
+
+    40% {
+        stroke: #5690ec;
+    }
+
+    66% {
+        stroke: #0057e7;
+    }
+
+    80%,
+    90% {
+        stroke: #5690ec;
+    }
+}

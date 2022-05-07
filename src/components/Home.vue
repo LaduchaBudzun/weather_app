@@ -1,31 +1,33 @@
 <template>
-
- <div class="app_wrapper">
+  <div class="app_wrapper">
     <div class="weather">
-        <div class="main">
-          <div class="header">
-            <div class="city_panel">
-              <img src="../../public/img/city.svg" alt="">
-              <span class="city">{{location.city}}</span>
-            </div>
-            <router-link class="settings_btn" to="/settings">
-              <img src="../../public/img/settings.svg" alt="">
-            </router-link>
+      <div class="main" v-if="location && date">
+        <div class="header">
+          <div class="city_panel">
+            <img src="../../public/img/city.svg" alt="" />
+            <span class="city">{{ location.city }}</span>
           </div>
-          <div class="time">
-            <p class="timeNow">{{date.time}}</p> 
-            <p class="monthNow">{{date.month}} </p>
-            <p>{{date.day}}{{numberEnding(date.day)}}, {{date.year}}</p>
-          </div>
-          <WeatherNow/>
-          <div class="WeatherForecast">
-            <HourlyForecast/>
-            <DailyForecast/>
-          </div>
-
+          <router-link class="settings_btn" to="/settings">
+            <img src="../../public/img/settings.svg" alt="" />
+          </router-link>
         </div>
+        <div class="time">
+          <p class="timeNow">{{ date.time }}</p>
+          <p class="monthNow">{{ date.month }}</p>
+          <p>{{ date.day }}{{ numberEnding(date.day) }}, {{ date.year }}</p>
+        </div>
+        <WeatherNow />
+        <div class="WeatherForecast">
+          <HourlyForecast />
+          <DailyForecast />
+        </div>
+      </div>
+
+      <div v-else class="loader">
+        <ProgressSpinner />
+      </div>
     </div>
- </div>
+  </div>
 </template>
 
 <script>
@@ -58,11 +60,11 @@ export default {
     },
     
     methods:{
-      ...mapActions(['getWeather']),...mapMutations(['timeDecoding']),
+      ...mapActions(['getWeather']),
+      ...mapMutations(['timeDecoding']),
+      
         updateTime(){
- 
           setInterval(() => {
-                     console.log(Date.now())
             const timeNow = Date.now() / 1000;
             this.timeDecoding({dt:timeNow})
           }, 10000)
@@ -72,58 +74,61 @@ export default {
 
 }
 </script>
-
 <style scoped>
-.monthNow{
+.loader {
+  width: 100%;
+  padding-top: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.monthNow {
   margin-right: 7px;
 }
-.timeNow{
+.timeNow {
   margin-right: 10px;
 }
-.WeatherForecast{
-    width: 100%;
-    border-radius: 22px;
-    background-color:#3A5CB3;
-    padding: 15px;
+.WeatherForecast {
+  width: 100%;
+  border-radius: 22px;
+  background-color: #3a5cb3;
+  padding: 15px;
 }
-.app_wrapper{
+.app_wrapper {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   padding: 24px 10px;
 }
-.time{
+.time {
   display: flex;
   justify-content: center;
-  color:#BCCCF4;
+  color: #bcccf4;
 }
-.settings_btn{
+.settings_btn {
   position: absolute;
   right: 0;
   cursor: pointer;
 }
-.header{
+.header {
   width: 100%;
   display: flex;
   justify-content: center;
   position: relative;
 }
-.weather{
-     
+.weather {
   color: white;
   max-width: 375px;
   min-width: 300px;
   width: 100%;
-
 }
-.city{
-    font-family: 'Roboto-700';
+.city {
+  font-family: "Roboto-700";
 
   margin-left: 7px;
 }
-.main{
+.main {
   width: 100%;
 }
-
 </style>
